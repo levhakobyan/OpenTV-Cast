@@ -1,0 +1,23 @@
+name: Bug or device compatibility report
+description: Help reproduce playback, discovery or installation problems.
+body:
+  - type: input
+    id: version
+    attributes:
+      label: OpenTV-Cast version
+    validations:
+      required: true
+  - type: textarea
+    id: devices
+    attributes:
+      label: Devices and network
+      description: TV/box model, Android version, sender and OS, Wi-Fi/Ethernet, resolution/FPS. Do not include serial numbers.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps and expected behavior
+      description: Say whether this is screen mirroring or media streaming and what happens instead. Remove personal information from logs.
+    validations:
+      required: true

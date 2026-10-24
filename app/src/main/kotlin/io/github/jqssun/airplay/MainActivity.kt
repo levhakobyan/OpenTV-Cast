@@ -23,6 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import io.github.jqssun.airplay.service.AirPlayService
+import io.github.jqssun.airplay.cast.CastPlaybackActivity
 import io.github.jqssun.airplay.ui.MainScreen
 import io.github.jqssun.airplay.ui.theme.AirPlayTheme
 import io.github.jqssun.airplay.viewmodel.LocalNetworkAccess
@@ -165,6 +166,7 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         _syncLocalNetwork()
         _refreshForeground()
+        if (CastPlaybackActivity.consumeAirPlayResumeRequest()) _autoStart()
     }
 
     fun enterPip() {
@@ -172,6 +174,7 @@ class MainActivity : ComponentActivity() {
         enterPictureInPictureMode(_pipParams())
     }
 
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.O)
     private fun _pipParams(): PictureInPictureParams {
         val aspect = if (viewModel.videoPlaybackActive.value) viewModel.videoPlaybackAspect.value
             else viewModel.videoAspect.value

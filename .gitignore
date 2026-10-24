@@ -10,3 +10,14 @@
 .cxx/
 
 *.jks
+/dist/
+/work/
+
+/_site/
+__pycache__/
+*.keystore
+.env
+.env.*
+*.pem
+*.key
+/.playwright-mcp/

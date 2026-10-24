@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AirPlay Server</string>
+    <string name="app_name">OpenTV-Cast</string>
 
     <!-- Notification -->
     <string name="notification_channel">AirPlay Service</string>
-    <string name="notification_title">AirPlay Server Running</string>
+    <string name="notification_title">OpenTV-Cast Running</string>
+    <string name="cast_setup_title">Android / Google Cast</string>
+    <string name="cast_setup_description">Cast Connect receives compatible video senders after receiver registration. For Android screen mirroring and apps such as YouTube, use your TV’s built-in Google Cast.</string>
+    <string name="cast_setup_open">Open Cast receiver</string>
     <string name="notification_text">Accepting AirPlay connections</string>
     <string name="notification_pin_title">AirPlay PIN Required</string>
     <string name="notification_pin_text">PIN: %1$s</string>

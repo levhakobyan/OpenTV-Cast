@@ -22,6 +22,9 @@ class VideoRenderer(ctx: Context) {
     private var videoWidth = 0
     private var videoHeight = 0
     private var firstFrameQueued = false
+    private var outputThread: Thread? = null
+    private var outputRunning = false
+    private var releasing = false
 
     // stats
     @Volatile var fps = 0; private set
@@ -51,7 +54,7 @@ class VideoRenderer(ctx: Context) {
         if (w == videoWidth && h == videoHeight) return@synchronized
         videoWidth = w
         videoHeight = h
-        pipeline.setVideoSize(w, h)
+        if (!releasing) pipeline.setVideoSize(w, h)
         stopCodec()
     }
 
@@ -122,6 +125,7 @@ class VideoRenderer(ctx: Context) {
 
     fun feedFrame(data: ByteArray, ntpTimeNs: Long, isH265: Boolean) {
         synchronized(lock) {
+            if (releasing) return
             _updateStats(data.size)
             if (videoWidth == 0 || videoHeight == 0) return
 
@@ -138,6 +142,7 @@ class VideoRenderer(ctx: Context) {
                 if (codec == null) startCodec(isH265)
                 _feedToCodec(data, ntpTimeNs)
                 drainOutput()
+                lock.notifyAll()
             } catch (e: Exception) {
                 Log.w(TAG, "Codec error, resetting", e)
                 stopCodec()
@@ -248,6 +253,34 @@ class VideoRenderer(ctx: Context) {
         }
         codec = c
         codecName = (if (h265) "H.265" else "H.264") + " (${c.name})"
+        _startOutputThread()
+        lock.notifyAll()
+    }
+
+    // A queued input usually finishes decoding after feedFrame's nonblocking drain.
+    // Keep draining even when the sender is idle; do not wait for its next packet.
+    // All codec calls still share lock with feed/reset, including stop and release.
+    private fun _startOutputThread() {
+        if (outputThread != null) return
+        outputRunning = true
+        outputThread = Thread({
+            synchronized(lock) {
+                while (outputRunning) {
+                    if (codec == null) {
+                        lock.wait()
+                    } else {
+                        try {
+                            drainOutput()
+                        } catch (e: Exception) {
+                            Log.w(TAG, "Codec output error, resetting", e)
+                            stopCodec()
+                        }
+                        // Waiting releases lock so input and lifecycle calls can run.
+                        lock.wait(OUTPUT_POLL_MS)
+                    }
+                }
+            }
+        }, "VideoOutput").also { it.start() }
     }
 
     private fun stopCodec() {
@@ -257,10 +290,8 @@ class VideoRenderer(ctx: Context) {
         _ptsBaseUs = Long.MIN_VALUE
         _wallBaseNs = 0L
         codec?.let {
-            try {
-                it.stop()
-                it.release()
-            } catch (_: Exception) {}
+            try { it.stop() } catch (_: Exception) {}
+            try { it.release() } catch (_: Exception) {}
         }
         codec = null
     }
@@ -286,10 +317,26 @@ class VideoRenderer(ctx: Context) {
         }
     }
 
-    fun release() = synchronized(lock) {
-        stopCodec()
-        pipeline.release()
-        _resetStats()
+    fun release() {
+        val worker = synchronized(lock) {
+            while (releasing) lock.wait()
+            releasing = true
+            stopCodec()
+            outputRunning = false
+            lock.notifyAll()
+            outputThread.also { outputThread = null }
+        }
+        // The output worker needs lock to exit; never join it while holding lock.
+        try {
+            worker?.join()
+            pipeline.release()
+        } finally {
+            synchronized(lock) {
+                _resetStats()
+                releasing = false
+                lock.notifyAll()
+            }
+        }
     }
 
     private fun _recordOutputFrameTime() {
@@ -324,5 +371,6 @@ class VideoRenderer(ctx: Context) {
         private const val FEED_WAIT_US = 20_000L
         private const val FEED_RETRIES = 10
         private const val FIRST_FEED_RETRIES = 50
+        private const val OUTPUT_POLL_MS = 5L
     }
 }

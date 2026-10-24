@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tag": "v0.2.1",
+  "apk": "OpenTV-Cast-0.2.1-debug-universal.apk",
+  "sha256": "1440a481ab9316772203e52f28c2015f85b2ac53575d863a276e0ce195b3a964",
+  "checksum_file": "OpenTV-Cast-0.2.1-SHA256SUMS.txt",
+  "source": "OpenTV-Cast-0.2.1-source.tar.gz",
+  "size": "49 MB",
+  "status": "Public preview · debug build"
+}

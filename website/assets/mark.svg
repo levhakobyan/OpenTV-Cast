@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" role="img" aria-label="OpenTV-Cast">
+<rect width="108" height="108" rx="26" fill="#10243a"/>
+<g transform="translate(12 12) scale(.78)"><rect x="20" y="34" width="68" height="42" rx="7" fill="#2dd4bf"/><rect x="26" y="39" width="56" height="32" rx="3" fill="#10243a"/><path d="m45 45 22 12-22 12z" fill="#f4fffe"/><path d="M72 24a14 14 0 0 1 12 12M73 31a7 7 0 0 1 5 5" stroke="#69f0d0" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M47 78h14v4H47zM39 82h30v4H39z" fill="#2dd4bf"/></g></svg>

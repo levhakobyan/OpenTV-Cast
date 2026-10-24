@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenTV-Cast — AirPlay for your Android TV</title>
+  <meta name="description" content="An open-source AirPlay receiver for Android TV and Google TV. Download the preview APK, mirror from iPhone, iPad or Mac, and make your screen a little bigger.">
+  <meta name="theme-color" content="#10243a">
+  <meta property="og:title" content="OpenTV-Cast — Your screen, a little bigger.">
+  <meta property="og:description" content="Open-source AirPlay for Android TV. Download, install and start sharing from iPhone, iPad or Mac.">
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="wrap header">
+  <a class="brand" href="#" aria-label="OpenTV-Cast home"><img src="assets/mark.svg" alt="" width="40" height="40"><span>OpenTV-Cast</span></a>
+  <nav aria-label="Main navigation"><a href="#setup">How to connect</a><a href="#questions">Questions</a><a class="source-link" href="{{REPO_URL}}">Source on GitHub <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4h10v10M16 4 4 16"/></svg></a></nav>
+</header>
+<main id="main">
+  <section class="wrap hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="availability"><span></span> AirPlay for Android TV</p>
+      <h1 id="hero-title">Your screen,<br>a little bigger.</h1>
+      <p class="intro">The photos worth sharing. The video everyone should see. Bring them from your iPhone, iPad or Mac to your Android TV.</p>
+      <div class="actions"><a class="button" href="{{APK_URL}}">Download for Android TV <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg></a><a class="quiet-link" href="#setup">Installation guide</a></div>
+      <p class="release-meta">v{{VERSION}} <span>·</span> {{SIZE}} <span>·</span> Android 6.0+<br><strong>{{STATUS}}</strong></p>
+    </div>
+    <div class="hero-art"><img src="assets/sharing.svg" width="1040" height="500" alt="Illustration of a phone sharing the same mountain scene to a television"><p><span class="signal-dot"></span> Same network. A bigger view.</p></div>
+  </section>
+  <div class="support-strip"><div class="wrap support-inner"><p>Made for the screen you already have.</p><div><span>Android TV</span><span>Google TV</span><span>Android boxes</span></div></div></div>
+  <section class="wrap features" aria-labelledby="features-title">
+    <h2 id="features-title">Small app.<br>Room for everyone.</h2>
+    <div class="feature"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="7" width="32" height="22" rx="3"/><path d="M15 34h10M20 29v5m-6-17 5 5 9-10"/></svg><h3>Share from Apple devices</h3><p>Use the Screen Mirroring controls already on your iPhone, iPad or Mac. No companion phone app needed.</p></div>
+    <div class="feature"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 17a18 18 0 0 1 26 0M12 22a11 11 0 0 1 16 0m-11 5a4 4 0 0 1 6 0"/><circle cx="20" cy="32" r="1"/></svg><h3>Connect on your network</h3><p>Keep your sender and TV on the same local network. Choose a receiver name and add an optional PIN.</p></div>
+    <div class="feature"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m13 11-9 9 9 9m14-18 9 9-9 9m-5-22-5 26"/></svg><h3>Open for a reason</h3><p>Read the code, improve it, or make it your own. Free to use and share under the GNU GPL v3 license.</p></div>
+  </section>
+  <section class="setup-section" id="setup" aria-labelledby="setup-title"><div class="wrap setup-grid">
+    <div class="setup-intro"><p class="section-note">A few minutes to get started</p><h2 id="setup-title">From download<br>to big screen.</h2><p>You’ll need an Android TV or box and an Apple device connected to the same network.</p><a class="text-link" href="{{REPO_URL}}/blob/main/INSTALL.md">Read the full installation guide</a></div>
+    <ol class="steps">
+      <li><h3>Install on your TV</h3><p>Download the APK, then open it from your downloads or a file manager. Allow installation from that app when Android asks, and confirm Install.</p><p class="step-tip">Browser won’t download? Copy the APK with a USB drive or use ADB.</p></li>
+      <li><h3>Open OpenTV-Cast</h3><p>Start the receiver on your TV. You can change its name and enable a connection PIN in Settings.</p></li>
+      <li><h3>Choose your TV</h3><p>On your iPhone, iPad or Mac, open Control Center, choose Screen Mirroring, and select OpenTV-Cast (or your saved receiver name).</p></li>
+    </ol>
+  </div></section>
+  <section class="wrap download-section" id="download" aria-labelledby="download-title">
+    <div><p class="section-note">Built in the open</p><h2 id="download-title">Give your TV<br>a new connection.</h2><p>This is an early preview. Tell us how it works on your TV and help make the next version better.</p><a class="button" href="{{APK_URL}}">Download APK <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg></a><p class="download-note">Android confirms installation after download.</p></div>
+    <div class="release-panel"><div class="release-heading"><img src="assets/mark.svg" alt="" width="52" height="52"><div><h3>OpenTV-Cast {{VERSION}}</h3><p>{{STATUS}}</p></div></div><dl><div><dt>Package</dt><dd>Universal APK · {{SIZE}}</dd></div><div><dt>Architectures</dt><dd>ARM64 / ARM32 / x86_64</dd></div><div><dt>Minimum OS</dt><dd>Android 6.0 (API 23)</dd></div><div><dt>License</dt><dd><a href="{{REPO_URL}}/blob/main/LICENSE">GNU GPL v3</a></dd></div></dl><div class="release-links"><a href="{{RELEASE_URL}}">Release notes</a><a href="{{SOURCE_URL}}">Source archive</a><a href="{{CHECKSUM_URL}}">SHA-256 file</a></div><details class="checksum"><summary>Check the APK fingerprint</summary><p>SHA-256</p><code>{{SHA256}}</code></details></div>
+  </section>
+  <section class="wrap faq" id="questions" aria-labelledby="faq-title"><h2 id="faq-title">Before you press play.</h2><div class="questions">
+    <details><summary>Will it work on my TV?</summary><p>The APK targets Android TV, Google TV and Android boxes on API 23 or newer. Hardware decoding, firmware and network setup affect results, and compatibility testing is still in progress. Samsung Tizen and LG webOS cannot install Android APKs.</p></details>
+    <details><summary>Does this replace Chromecast?</summary><p>No. The preview focuses on AirPlay. Its experimental Cast Connect code needs external registration and a compatible sender; it does not enable arbitrary Android/Chrome casting. Use your TV’s built-in Google Cast where available.</p></details>
+    <details><summary>Can I watch protected streaming content?</summary><p>DRM-protected content is unsupported and may show a black screen or fail. Try ordinary screen mirroring, your own photos or a non-protected video to check your connection.</p></details>
+    <details><summary>My TV doesn’t appear, or motion looks jerky.</summary><p>Keep both devices on the same local network and avoid guest networks with device isolation. Keep the receiver open for the first connection. For jerky motion, try 720p at 30 FPS in Settings. Device performance still needs real-world testing.</p></details>
+    <details><summary>Is this a finished production release?</summary><p>It’s a debug-signed public preview. Build, unit and renderer lifecycle checks have passed, but physical TV smoothness and broad sender compatibility still need testing. <a href="{{REPO_URL}}/issues/new/choose">Share a device report on GitHub.</a></p></details>
+    <details><summary>Can I use and modify it for free?</summary><p>Yes, under GNU GPL v3. Keep attribution and provide corresponding source when redistributing modified binaries. OpenTV-Cast builds on android-airplay-server, UxPlay and other open-source work. <a href="{{REPO_URL}}/blob/main/THIRD_PARTY_NOTICES.md">Read the credits and notices.</a></p></details>
+  </div></section>
+</main>
+<footer class="wrap footer"><div class="brand"><img src="assets/mark.svg" alt="" width="32" height="32"><span>OpenTV-Cast</span></div><p>Made to be shared. Built on open source.</p><div><a href="{{REPO_URL}}">GitHub</a><a href="{{REPO_URL}}/issues/new/choose">Report an issue</a><a href="{{REPO_URL}}/blob/main/LICENSE">License</a></div><small>An independent project. Not affiliated with Apple or Google.</small></footer>
+</body></html>

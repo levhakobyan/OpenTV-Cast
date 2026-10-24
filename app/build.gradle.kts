@@ -30,11 +30,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "io.github.jqssun.airplay"
+        applicationId = "local.airplaytv.receiver"
         minSdk = 23
         targetSdk = 37
-        versionCode = 36
-        versionName = "0.0.36"
+        versionCode = 3
+        versionName = "0.2.1"
 
         externalNativeBuild {
             cmake {
@@ -122,6 +122,10 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.exoplayer.hls)
     implementation(libs.media3.ui.compose.material3)
+    implementation("androidx.media3:media3-ui:1.11.1")
+    implementation("com.google.android.gms:play-services-cast-tv:21.1.1")
+    // Cast 23 requires API 24; retain the app's existing API 23 install support.
+    implementation("com.google.android.gms:play-services-cast:22.3.1")
     implementation(libs.media3.transformer)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.oboe)
@@ -137,4 +141,5 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    testImplementation("junit:junit:4.13.2")
 }

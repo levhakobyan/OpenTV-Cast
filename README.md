@@ -1,93 +1,61 @@
-# AirPlay Receiver for Android
+<p align="center"><img src="website/assets/mark.svg" width="88" alt="OpenTV-Cast"></p>
+<h1 align="center">OpenTV-Cast</h1>
+<p align="center">Your Apple screen. Your Android TV.</p>
+<p align="center">An open-source AirPlay receiver for Android TV, Google TV and Android boxes.</p>
+<p align="center"><a href="https://levhakobyan.github.io/OpenTV-Cast/">Download & installation</a> · <a href="INSTALL.md">Quick start</a> · <a href="CONTRIBUTING.md">Contribute</a> · <a href="LICENSE">GPL-3.0</a></p>
 
-[![Stars](https://img.shields.io/github/stars/jqssun/android-airplay-server)](https://github.com/jqssun/android-airplay-server)
-[![GitHub](https://img.shields.io/github/downloads/jqssun/android-airplay-server/total?label=GitHub&logo=GitHub)](https://github.com/jqssun/android-airplay-server/releases)
-[![license](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/jqssun/android-airplay-server/blob/main/LICENSE)
-[![build](https://img.shields.io/github/actions/workflow/status/jqssun/android-airplay-server/apk.yml?label=build)](https://github.com/jqssun/android-airplay-server/actions/workflows/apk.yml)
-[![release](https://img.shields.io/github/v/release/jqssun/android-airplay-server)](https://github.com/jqssun/android-airplay-server/releases)
+![An Apple device sharing to an Android TV — illustration](website/assets/sharing.svg)
 
-A fully featured free and open-source implementation of AirPlay for Android that turns your device into an AirPlay-compatible display and speaker, based on [UxPlay](https://github.com/FDH2/UxPlay). It is the first open-source AirPlay 2 receiver for Android and Android TV, and works with iOS/iPadOS, macOS devices as well as other sender implementations.
+OpenTV-Cast lets an Android TV or box receive screen mirroring and supported audio/video streams from an iPhone, iPad or Mac on the same local network. No companion iPhone app or OpenTV-Cast account is required. It builds on [android-airplay-server](https://github.com/jqssun/android-airplay-server) and [UxPlay](https://github.com/FDH2/UxPlay); this is a downstream project, with their work and licenses preserved.
 
-[<img height="48" alt="Get it on Google Play" src="https://jqssun.github.io/images/badges/google-play-store.svg">](https://play.google.com/store/apps/details?id=io.github.jqssun.airplay)
-[<img height="48" alt="Get it on F-Droid" src="https://jqssun.github.io/images/badges/fdroid.svg">](https://f-droid.org/packages/io.github.jqssun.airplay)
-[<img height="48" alt="Get it on GitHub" src="https://jqssun.github.io/images/badges/github.svg">](https://github.com/jqssun/android-airplay-server/releases/latest)
+## Try the preview
 
-<video loop src='https://github.com/user-attachments/assets/79ed7c0c-0102-43cc-8816-4f00ce6a4199' alt="demo" width="200" style="display: block; margin: auto;"></video>
+**[Download OpenTV-Cast 0.2.1](https://github.com/levhakobyan/OpenTV-Cast/releases/tag/v0.2.1)** — a universal, debug-signed test APK, not a production release. The APK, checksums and full source archive are attached to the release.
 
-## Compatibility
+1. Install the APK on your Android TV or box. Android will ask you to allow installation from the browser or file manager you use.
+2. Open **OpenTV-Cast**, start the receiver, and connect both devices to the same local network.
+3. On iPhone/iPad, open **Control Center → Screen Mirroring → OpenTV-Cast**. On macOS, use **Control Center → Screen Mirroring**.
 
-- Android 7.0+, including Android TV
-- AirPlay devices on the same subnet, including iOS/iPadOS, macOS devices, or other sender implementations
+You can also copy the APK by USB or install with `adb install -r`. See the [installation guide](INSTALL.md) for upgrades and troubleshooting. A web link downloads the APK; Android still requires you to confirm installation.
 
-## Features
+## What it supports
 
-- Screen mirroring with H.264 and H.265 (HEVC) video decoding
-- Audio streaming with AAC-ELD, AAC-LC and ALAC audio decoding
-- Video playback with support for HLS, downloads, and remote controls
-- Music playback with track information, cover art, and remote controls
-- Support for Android TV with directional pad navigation and seeking controls
-- Support for Picture-in-Picture, automatic resolution and mode switching
-- Optional PIN authentication
-- Video resolution, overscan, and frame rate control
-- Audio latency control and support for software decoder fallback
-- Debug overlay with real-time statistics (FPS, bitrate, codec, resolution, frame count, audio volume, etc.)
-- Android native media session integration with notification controls
-- Wired secondary display for macOS/iPadOS devices over USB tethering
+| Capability | Current scope |
+| --- | --- |
+| AirPlay screen mirroring | iPhone, iPad and macOS sender support inherited from UxPlay; validate your device combination |
+| Audio and video | Supported AirPlay streams, HLS video and media controls; protected content is unsupported |
+| TV controls | Remote navigation, receiver naming, optional PIN, resolution/frame-rate and latency settings |
+| Android installation | API 23+; native ARM64, ARM32 and x86_64 in one APK |
+| Google Cast | Experimental Cast Connect integration only; requires external setup and a compatible sender. **Not a Chromecast replacement.** |
 
-> [!WARNING]
-> DRM content (e.g. from the Apple TV application) is not supported.
+Android TV/Google TV is the target. Samsung Tizen and LG webOS cannot install this APK. Network discovery needs multicast and direct local connections; isolated guest networks may prevent discovery.
 
-## Configure from ADB
+## Preview status
 
-On devices without a display, settings can also be changed over ADB. The receiver is protected by `android.permission.DUMP` so regular installed apps cannot change them. Values are passed as text using `--es`. Using `adb shell`:
+Version 0.2.1 introduces the OpenTV-Cast name and icon. The 0.2 series decouples mirroring decoder output from network input and moves frame callbacks off the main thread, to address jerky motion. Unit tests, renderer lifecycle checks, Android builds and emulator smoke checks have passed; smoothness on physical TVs still needs measurement. No universal TV compatibility or Apple TV performance parity is claimed.
 
-```bash
-export KEY="server_name" VALUE="Speaker"
-am broadcast -n io.github.jqssun.airplay/.SettingsReceiver -a io.github.jqssun.airplay.SET_SETTING --es key "$KEY" --es value "$VALUE"
+Read the [changelog](CHANGELOG.md), [verification record](VERIFICATION-0.2.0.md) and [Cast limitations](CAST_SETUP.md). Please report the TV/box model, Android version, sender/OS and connection mode when opening an issue.
+
+## Build from source
+
+Use JDK 21, Python 3 and the Android SDK. The project uses SDK 37, NDK `27.0.12077973` and CMake `3.22.1`.
+
+```sh
+git clone --recurse-submodules https://github.com/levhakobyan/OpenTV-Cast.git
+cd OpenTV-Cast
+# Set ANDROID_HOME to your SDK, or set sdk.dir in local.properties.
+./gradlew :app:testDebugUnitTest :app:assembleDebug :app:lintDebug
+python3 tools/tests/video_renderer_regression.py
 ```
 
-To list all settings with their current values as JSON:
+Gradle downloads dependencies on the first build. The APK is produced at `app/build/outputs/apk/debug/app-debug.apk`. Native UxPlay patches are tracked under `app/src/main/cpp/patches/UxPlay` and applied by Gradle. Do not edit generated submodule changes directly. Debug builds made by different developers/CI use different signing keys and cannot necessarily upgrade each other.
 
-```bash
-am start -n io.github.jqssun.airplay/.MainActivity
-am broadcast -n io.github.jqssun.airplay/.SettingsReceiver -a io.github.jqssun.airplay.LIST_SETTINGS
-```
+For website previews, run `python3 tools/build_site.py` followed by `python3 -m http.server 8080 --bind 127.0.0.1 --directory work/site-preview`. The site has no JavaScript or third-party font dependency. [Publishing instructions](PUBLISHING.md) cover GitHub Releases and Pages.
 
-## Implementation
+## Open source & acknowledgements
 
-This application uses the C-based [UxPlay](https://github.com/FDH2/UxPlay) library to implement the AirPlay/RAOP protocol, with a JNI bridge to the Android application layer. Audio can be decoded via MediaCodec or a software ALAC decoder, while mirroring video is decoded via MediaCodec and rendered to a SurfaceView. HLS sessions are served through a local playlist proxy.
+Use, study, modify and redistribute this project under **[GNU GPL v3](LICENSE)**, subject to its terms. Preserve notices and provide the corresponding source when distributing modified binaries. Third-party components retain their respective licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-When using USB tethering, the Android device can act as a reliable secondary display over a wired connection. Apple devices natively support USB tethering over CDC-NCM, so on Android devices that default to RNDIS, you may need to switch to CDC-NCM over ADB:
+Thanks to [jqssun/android-airplay-server](https://github.com/jqssun/android-airplay-server), [UxPlay](https://github.com/FDH2/UxPlay), [FFmpeg](https://ffmpeg.org), [libplist](https://github.com/libimobiledevice/libplist), [openssl-cmake](https://github.com/viaduck/openssl-cmake), [OpenSSL](https://openssl.org), [Oboe](https://github.com/google/oboe) and [Next Player](https://github.com/anilbeesetti/nextplayer).
 
-```bash
-adb shell settings put global tether_force_usb_functions 1
-```
-
-```mermaid
-flowchart LR
-    AppleDevice["Apple Device (Sender)"]
-    UxPlay["UxPlay (C/JNI)<br/>RAOP + mDNS<br/>FairPlay + HLS"]
-    AndroidApp["Android (Receiver)<br/>MediaCodec + AudioTrack<br/>ExoPlayer (HLS)"]
-
-    AppleDevice -- "RAOP / HLS" --> UxPlay
-    UxPlay --> AndroidApp
-```
-
-CMake is used for native C/C++ components under [`app/src/main/cpp`](app/src/main/cpp). Submodules must be initialized before building. 
-
-```bash
-git submodule update --init --recursive
-./gradlew assembleDebug
-```
-
-Check out the [CI](https://github.com/jqssun/android-airplay-server/blob/main/.github/workflows/apk.yml) for more details on reproducible builds.
-
-## Credits
-
-- [UxPlay](https://github.com/FDH2/UxPlay) for the AirPlay/RAOP server implementation
-- [FFmpeg](https://ffmpeg.org) for the lossless audio decoder
-- [Next Player](https://github.com/anilbeesetti/nextplayer) for the video player
-
----
-
-Disclaimer: This project is not affiliated with Apple Inc.
+This project is not affiliated with or endorsed by Apple or Google. AirPlay and other product names belong to their respective owners.

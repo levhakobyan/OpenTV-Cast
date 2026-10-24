@@ -6,6 +6,8 @@ import android.opengl.EGLSurface
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.Matrix
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import java.nio.ByteBuffer
@@ -18,6 +20,7 @@ class VideoPipeline {
 
     private val lock = Object()
     private var thread: Thread? = null
+    private var callbackThread: HandlerThread? = null
     @Volatile private var running = false
 
     private var egl: EglCore? = null
@@ -42,11 +45,22 @@ class VideoPipeline {
     @Volatile private var videoW = 0
     @Volatile private var videoH = 0
 
-    fun start() = synchronized(lock) {
-        if (running) return@synchronized
-        running = true
-        thread = Thread({ _loop() }, "VideoPipeline").also { it.start() }
-        while (inputSurface == null && running) lock.wait()
+    fun start() {
+        val previous = synchronized(lock) {
+            if (running) return
+            thread to callbackThread
+        }
+        // A failed GL initialization may still be finishing its cleanup.
+        previous.first?.join()
+        previous.second?.join()
+        synchronized(lock) {
+            running = true
+            frameAvailable = false
+            displayDirty = true
+            callbackThread = HandlerThread("VideoFrames").also { it.start() }
+            thread = Thread({ _loop() }, "VideoPipeline").also { it.start() }
+            while (inputSurface == null && running) lock.wait()
+        }
     }
 
     fun setDisplaySurface(surface: Surface?) = synchronized(lock) {
@@ -62,50 +76,60 @@ class VideoPipeline {
     }
 
     fun release() {
-        synchronized(lock) {
-            if (!running) return
+        val workers = synchronized(lock) {
             running = false
             lock.notifyAll()
+            thread to callbackThread
         }
-        thread?.join()
-        thread = null
+        workers.first?.join()
+        workers.second?.quitSafely()
+        workers.second?.join()
+        synchronized(lock) {
+            thread = null
+            callbackThread = null
+            frameAvailable = false
+        }
     }
 
     private fun _loop() {
         try {
             egl = EglCore()
             _initGl()
-        } catch (e: Exception) {
-            Log.e(TAG, "GL init failed", e)
-            synchronized(lock) { running = false; lock.notifyAll() }
-            return
-        }
-        Matrix.setIdentityM(texMatrix, 0)
-        synchronized(lock) {
-            inputSurface = Surface(surfaceTexture)
-            lock.notifyAll()
-        }
-        while (true) {
-            var newDisplay: Surface? = null
-            var displayChanged = false
-            var doFrame = false
+            Matrix.setIdentityM(texMatrix, 0)
             synchronized(lock) {
-                while (running && !frameAvailable && !displayDirty) lock.wait()
-                if (running && displayDirty) {
-                    newDisplay = pendingDisplay
-                    displayChanged = true
-                    displayDirty = false
-                }
-                if (running && frameAvailable) {
-                    frameAvailable = false
-                    doFrame = true
-                }
+                inputSurface = Surface(surfaceTexture)
+                lock.notifyAll()
             }
-            if (!running) break
-            if (displayChanged) _bindDisplay(newDisplay)
-            if (doFrame) _consumeAndDraw()
+            while (true) {
+                var newDisplay: Surface? = null
+                var displayChanged = false
+                var doFrame = false
+                synchronized(lock) {
+                    while (running && !frameAvailable && !displayDirty) lock.wait()
+                    if (running && displayDirty) {
+                        newDisplay = pendingDisplay
+                        displayChanged = true
+                        displayDirty = false
+                    }
+                    if (running && frameAvailable) {
+                        frameAvailable = false
+                        doFrame = true
+                    }
+                }
+                if (!running) break
+                if (displayChanged) _bindDisplay(newDisplay)
+                if (doFrame) _consumeAndDraw()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "GL pipeline failed", e)
+        } finally {
+            try {
+                _releaseGl()
+            } finally {
+                synchronized(lock) { running = false; lock.notifyAll() }
+                callbackThread?.quitSafely()
+            }
         }
-        _releaseGl()
     }
 
     private fun _bindDisplay(surface: Surface?) {
@@ -177,9 +201,13 @@ class VideoPipeline {
         GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
         surfaceTexture = SurfaceTexture(oesTex).also {
             if (videoW > 0 && videoH > 0) it.setDefaultBufferSize(videoW, videoH)
-            it.setOnFrameAvailableListener {
-                synchronized(lock) { frameAvailable = true; lock.notifyAll() }
-            }
+            // This GL thread has no Looper. Without an explicit Handler Android
+            // sends notifications through the main Looper, delaying frames during UI work.
+            it.setOnFrameAvailableListener({
+                synchronized(lock) {
+                    if (running) { frameAvailable = true; lock.notifyAll() }
+                }
+            }, Handler(checkNotNull(callbackThread).looper))
         }
     }
 
@@ -206,6 +234,8 @@ class VideoPipeline {
     }
 
     private fun _releaseGl() {
+        hasFrame = false
+        surfaceTexture?.setOnFrameAvailableListener(null)
         surfaceTexture?.release()
         surfaceTexture = null
         inputSurface?.release()

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 500" role="img" aria-labelledby="title desc">
+<title id="title">From your small screen to the big one</title><desc id="desc">An illustration of a phone mirroring a mountain landscape to a television using OpenTV-Cast.</desc>
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#377b99"/><stop offset="1" stop-color="#9dd9ce"/></linearGradient><clipPath id="tv"><rect x="190" y="45" width="750" height="374" rx="13"/></clipPath><clipPath id="phone"><rect x="80" y="189" width="132" height="257" rx="19"/></clipPath><g id="scene"><rect width="780" height="420" fill="url(#sky)"/><circle cx="590" cy="110" r="39" fill="#fbe6bc"/><path d="M0 340 170 111 390 370 560 160 780 360V420H0" fill="#2b6474"/><path d="m170 111-42 56 43-17 43 14zM560 160l-36 44 36-11 35 12z" fill="#e0f2eb"/><path d="M0 389 180 290 340 360 470 282 780 400V420H0" fill="#174756"/><path d="M0 415 160 360 330 402 570 340 780 410V420H0" fill="#0e3045"/></g></defs>
+<rect width="1040" height="500" rx="28" fill="#edf5f6"/><ellipse cx="565" cy="461" rx="390" ry="12" fill="#d9e7e9"/>
+<path d="m490 420-22 33h182l-22-33" fill="#19344d"/><rect x="177" y="32" width="776" height="400" rx="23" fill="#10243a"/>
+<g clip-path="url(#tv)"><use href="#scene" x="190" y="45"/></g><circle cx="565" cy="425" r="2.5" fill="#69f0d0"/>
+<rect x="70" y="179" width="152" height="277" rx="28" fill="#10243a"/><g clip-path="url(#phone)"><use href="#scene" transform="translate(-45 189) scale(.62)"/></g><rect x="117" y="194" width="58" height="12" rx="6" fill="#10243a"/><path d="M130 432h33" stroke="#e6f9f5" stroke-width="4" stroke-linecap="round"/>
+<path d="M247 236q40-58 99-49M256 263q32-34 68-26" stroke="#1c8d84" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="1 13"/>
+</svg>
